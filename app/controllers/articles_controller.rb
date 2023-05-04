@@ -21,7 +21,7 @@ class ArticlesController < ApplicationController
 
     # POST /articles (If logged in)
     def create
-        current_user = User.find(@current_user_id)
+        current_user = @current_user
         if current_user
             article = current_user.articles.new(article_params)
             if article.save
@@ -37,7 +37,7 @@ class ArticlesController < ApplicationController
     # PATCH /articles/:id  (If logged in)
     def update
         article = find_article
-        current_user = User.find(@current_user_id)
+        current_user = @current_user
         if current_user && (current_user == article.user || current_user.role == "admin")
             if article.update(article_params)
                 render json: article, status: :accepted
@@ -52,7 +52,7 @@ class ArticlesController < ApplicationController
 
     # DELETE /articles/:id (Article owner or admin)
     def destroy
-        current_user = User.find_by(id: @current_user_id)
+        current_user = @current_user
         article = find_article
         if current_user && (current_user == article.user || current_user.role == "admin")
             article.destroy
@@ -64,12 +64,12 @@ class ArticlesController < ApplicationController
 
     # Like
     def like
-        current_user = User.find_by(id: session[:user_id])
+        current_user = @current_user
         article = find_article
-        if current_user
-            article.likes += 1
-            if @article.save
-                render json: article, status: :ok
+        if current_user && article
+            article.update(likes: article.likes + 1)
+            if article.save
+                render json: article, status: :ok, serializer: ArticleLikesSerializer
             else
                 render json: article.errors, status: :unprocessable_entity
             end
@@ -80,12 +80,12 @@ class ArticlesController < ApplicationController
 
     # Dislike
     def dislike
-        current_user = User.find_by(id: session[:user_id])
+        current_user = @current_user
         article = find_article
-        if current_user
+        if current_user && article
             article.dislikes += 1
-            if @article.save
-                render json: article, status: :ok
+            if article.save
+                render json: article, status: :ok, serializer: ArticleDislikesSerializer
             else
                 render json: article.errors, status: :unprocessable_entity
             end

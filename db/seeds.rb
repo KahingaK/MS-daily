@@ -52,3 +52,11 @@ cat9 = Category.create!(
   end
 
 
+  50.times do
+    Article.create!(
+      title: Faker::Book.title,
+      body: Faker::Lorem.sentence,      
+      user_id: User.pluck(:id).sample,
+     
+    )
+  end
