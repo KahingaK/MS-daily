@@ -2,7 +2,9 @@ Rails.application.routes.draw do
   resources :notifications
   resources :wishlists
   # SUBSCRIPTIONS
-  resources :subscriptions ,only: [:create, :index, :destroy]
+  resources :subscriptions 
+   # show subscribed articles
+   get "/subscriptions/articles", to: "subsciptions#articles"
   
   #CATEGORIES
   resources :categories ,only: [:index, :create, :destroy]
@@ -16,8 +18,7 @@ Rails.application.routes.draw do
   # POST /signup
   post "/signup", to: "users#create"
 
-  # stay logged in
-  get "/me", to: "users#show"
+ 
 
   # SESSIONS
   post "/login", to: "sessions#create"

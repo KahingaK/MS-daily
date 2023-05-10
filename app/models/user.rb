@@ -3,9 +3,9 @@ class User < ApplicationRecord
     has_one :profile
     has_many :articles
     has_many :comments
-    has_many :categories, through: :subscriptions
-    has_many :subscriptions    
-    has_many :articless, through: :articles_categories, source: :article
+    has_many :subscriptions, dependent: :destroy
+    has_many :categories, through: :subscriptions       
+    # has_many :articles, through: :articles_categories, source: :article
     # has_many :articles
     # roles
     enum role: [:technicalwriter, :moderator, :admin]

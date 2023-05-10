@@ -25,7 +25,7 @@ class ArticlesController < ApplicationController
         if current_user
             article = current_user.articles.new(article_params)
             if article.save
-                render article, status: :created, location: article
+                render article, status: :created
             else
                 render json: article.errors.full_messages, status: :unprocessable_entity
             end

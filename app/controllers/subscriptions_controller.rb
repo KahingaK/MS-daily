@@ -20,6 +20,30 @@ class SubscriptionsController < ApplicationController
         render json: { error: "User not found" }, status: :unprocessable_entity
       end
     end
+
+    
+    #Show articles from subscribed caregories
+    def articles
+      # Ensure user is logged in
+        current_user = @current_user
+        unless current_user
+          render json: { error: 'You need to be logged in' }, status: :unauthorized 
+          return
+        end
+        
+        # Get categories subscribed to by current user
+        categories = current_user.categories
+        
+        # Join article_categories and articles tables to get articles for subscribed categories
+        articles = Article.joins(article_categories: :category).where(categories: { id: categories })
+        
+        # Return JSON response with articles
+        render json: articles, status: :ok 
+    end
+            
+
+
+
         
    
         # Unsubscribe from category
